@@ -196,6 +196,17 @@ input[type="range"]::-moz-range-thumb {
   margin-bottom: 16px;
 }
 
+.wireframe-stack {
+  display: grid;
+}
+
+.wireframe-layer {
+  grid-area: 1 / 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 /* Scale wireframe via CSS — no change to canvas rendering logic */
 .wireframe-wrap canvas {
   max-height: clamp(160px, 26vh, 260px);
