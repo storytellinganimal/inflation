@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
 
 :root {
   --butter: #FFF2BA;
@@ -43,10 +43,11 @@ body {
 .content-zone {
   flex: 1;
   display: flex;
-  align-items: center;       /* vertical centering */
+  align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 24px 24px;        /* equal top+bottom = minimum equal breathing room */
+  /* larger top padding shifts centering point up, reducing gap to slider below */
+  padding: clamp(40px, 14vh, 160px) 24px 0;
 }
 
 /* ── BOTTOM ZONE — never moves ──────────────────────────── */
@@ -126,7 +127,7 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .site-title {
-  font-family: 'Lora', Georgia, serif;
+  font-family: "late-serif-variable", Georgia, serif;
   font-style: normal;
   font-weight: 400;
   font-size: clamp(72px, 8.5vw, 120px);
@@ -166,7 +167,7 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .product-name {
-  font-family: 'Lora', Georgia, serif;
+  font-family: "late-serif-variable", Georgia, serif;
   font-style: normal;
   font-weight: 400;
   font-size: clamp(30px, 3.5vw, 48px);
@@ -381,7 +382,7 @@ input[type="range"]::-moz-range-thumb {
 }
 
 @media (max-height: 700px) {
-  .content-zone { padding: 12px 24px; }
+  .content-zone { padding: 24px 24px 0; }
   .wireframe-wrap canvas { max-height: clamp(120px, 22vh, 180px); }
   .indicators-row { margin-bottom: 10px; }
   .slider-region { margin-bottom: 24px; }
