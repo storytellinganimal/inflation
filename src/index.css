@@ -6,7 +6,6 @@
   --ink-mid:  rgba(0, 0, 0, 0.45);
   --ink-soft: rgba(0, 0, 0, 0.22);
   --ink-warm: #1a1000;
-  --red: #B03A28;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -51,6 +50,7 @@ body {
 
 .content-zone--product {
   align-items: flex-start;
+  padding-top: clamp(28px, 7vh, 72px);
 }
 
 /* ── BOTTOM ZONE — never moves ──────────────────────────── */
@@ -71,7 +71,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-bottom: 40px;
+  margin-bottom: 60px;
 }
 
 input[type="range"] {
@@ -256,7 +256,7 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .indicator--high .indicator-value {
-  color: var(--red);
+  color: var(--ink);
 }
 
 /* ── NARRATIVE ──────────────────────────────────────────── */
