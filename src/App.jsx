@@ -46,7 +46,7 @@ function narrative(p, yi) {
   return `${p.unit} of ${p.label.toLowerCase()} cost about ${eur(p.price2020)} in 2020 and about ${eur(pNow)} in ${year} (${pct >= 0 ? "+" : ""}${num(pct, 1)}%, ${dir}). For the same 2020 price, in ${year} you'd get only about ${gotPhrase}.`;
 }
 
-// ============ WIREFRAME ============
+// ============ WIREFRAME — DO NOT MODIFY ============
 function Wireframe({ shape, scale, ratio = 1, size = 400, strokeColor = "#1A1000", fillColor = "#F5E6A3" }) {
   const ref = useRef(null);
   const angle = useRef(0.5);
@@ -265,15 +265,51 @@ function Wireframe({ shape, scale, ratio = 1, size = 400, strokeColor = "#1A1000
   );
 }
 
-// ============ PRODUCT DETAIL ============
-function ProductDetail({ product, yearIdx, onYearChange }) {
+// ============ YEAR SLIDER ============
+function YearSlider({ yearIdx, onChange }) {
+  return (
+    <div className="slider-region">
+      <input
+        type="range"
+        min={0}
+        max={YEARS.length - 1}
+        step={1}
+        value={yearIdx}
+        onChange={(e) => onChange(Number(e.target.value))}
+      />
+      <div className="year-ticks-row">
+        {YEARS.map((y, i) => (
+          <span key={y} data-active={String(i === yearIdx)}>{y}</span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ============ LANDING VIEW ============
+function LandingView() {
+  return (
+    <div className="landing-content">
+      <h1 className="site-title">inflation.</h1>
+      <div className="landing-text">
+        <p className="landing-subtitle">What did inflation do to your shopping basket?</p>
+        <p className="landing-description">
+          German food prices rose by 32% between 2020 and 2024, outpacing both wages and overall inflation.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ============ PRODUCT VIEW ============
+function ProductView({ product, yearIdx }) {
   const idx = product.index[yearIdx];
   const scale = scaleFor(idx);
   const pNow = priceFor(product, yearIdx);
   const pct = Math.round((idx - BASE_INDEX) * 10) / 10;
 
   return (
-    <div className="detail-inner">
+    <div className="product-view">
       <h2 className="product-name">{product.label}</h2>
       <span className="product-unit">{product.unit}</span>
 
@@ -281,39 +317,22 @@ function ProductDetail({ product, yearIdx, onYearChange }) {
         <Wireframe shape={product.shape} scale={scale} ratio={BASE_INDEX / idx} size={400} />
       </div>
 
-      <div className="stats-row">
-        <div className="stat">
-          <span className="stat-value">{num(idx, 1)}</span>
-          <span className="stat-label">index</span>
+      <div className="indicators-row">
+        <div className="indicator">
+          <span className="indicator-value">{num(idx, 1)}</span>
+          <span className="indicator-label">Index</span>
         </div>
-        <div className="stat">
-          <span className="stat-value">{eur(pNow)}</span>
-          <span className="stat-label">price {YEARS[yearIdx]}</span>
+        <div className="indicator">
+          <span className="indicator-value">{eur(pNow)}</span>
+          <span className="indicator-label">Price {YEARS[yearIdx]}</span>
         </div>
-        <div className={`stat${pct >= 30 ? " stat--high" : ""}`}>
-          <span className="stat-value">{pct >= 0 ? "+" : ""}{num(pct, 1)}%</span>
-          <span className="stat-label">vs. 2020</span>
+        <div className={`indicator${pct >= 30 ? " indicator--high" : ""}`}>
+          <span className="indicator-value">{pct >= 0 ? "+" : ""}{num(pct, 1)}%</span>
+          <span className="indicator-label">vs. 2020</span>
         </div>
       </div>
 
       <p className="narrative">{narrative(product, yearIdx)}</p>
-
-      <div className="timeline">
-        <div className="year-display">{YEARS[yearIdx]}</div>
-        <input
-          type="range"
-          min={0}
-          max={YEARS.length - 1}
-          step={1}
-          value={yearIdx}
-          onChange={(e) => onYearChange(Number(e.target.value))}
-        />
-        <div className="year-ticks">
-          {YEARS.map((y, i) => (
-            <span key={y} data-active={String(i === yearIdx)}>{y}</span>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
@@ -322,63 +341,57 @@ function ProductDetail({ product, yearIdx, onYearChange }) {
 export default function InflationApp() {
   const [activeId, setActiveId] = useState(null);
   const [yearIdx, setYearIdx] = useState(0);
-  const detailRef = useRef(null);
 
   const active = PRODUCTS.find((p) => p.id === activeId);
 
   const handleSelect = (id) => {
+    if (id !== activeId) setYearIdx(0);
     setActiveId(id);
-    setYearIdx(0);
-    setTimeout(() => {
-      detailRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 20);
   };
 
   return (
-    <div className="page">
-      <header className="header">
-        <h1 className="site-title">inflation.</h1>
-        <p className="tagline">German food prices, 2020–2024</p>
-        <p className="intro">
-          Each object represents a grocery staple. Its size shrinks as the price rises —
-          showing how much less your money buys each year. Select a product below.
-        </p>
-      </header>
+    <div className="app">
+      <div className="page-frame">
 
-      <hr className="divider" />
+        {/* Content zone: fills remaining height, content vertically centered */}
+        <div className="content-zone">
+          {active
+            ? <ProductView key={activeId} product={active} yearIdx={yearIdx} />
+            : <LandingView />
+          }
+        </div>
 
-      <div className="nav-sticky">
-        <nav className="product-nav">
-          {PRODUCTS.map((p) => (
-            <button
-              key={p.id}
-              className={`product-btn${activeId === p.id ? " product-btn--active" : ""}`}
-              onClick={() => handleSelect(p.id)}
-            >
-              {p.label}
-            </button>
-          ))}
-        </nav>
+        {/* Bottom zone: always fixed at same position — slider never moves */}
+        <div className="bottom-zone">
+          <YearSlider yearIdx={yearIdx} onChange={setYearIdx} />
+          <p className="cta-text">Select a product to see how much less your money now buys</p>
+          <div className="nav-outer">
+            <nav className="product-nav">
+              {PRODUCTS.map((p) => (
+                <button
+                  key={p.id}
+                  className={`product-btn${activeId === p.id ? " product-btn--active" : ""}`}
+                  onClick={() => handleSelect(p.id)}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </nav>
+          </div>
+          <div className="disclaimer">
+            <p>
+              This experiment explores data storytelling through vibe coding and was not produced under full journalistic
+              standards of accuracy, verification, or editorial review. Inflation data comes from official German
+              statistics: Statistisches Bundesamt (Destatis), Verbraucherpreisindex, Sonderauswertung Nahrungsmittel,
+              annual averages 2020–2024. Euro prices are estimates based on the index and a 2020 reference price.
+            </p>
+          </div>
+          <footer className="site-footer">
+            <p>Designed by Lina Moreno. Developed with Claude.</p>
+          </footer>
+        </div>
+
       </div>
-
-      {active && (
-        <section className="detail" ref={detailRef}>
-          <ProductDetail
-            key={activeId}
-            product={active}
-            yearIdx={yearIdx}
-            onYearChange={setYearIdx}
-          />
-        </section>
-      )}
-
-      <footer className="footer">
-        <p>
-          Data: Statistisches Bundesamt (Destatis), Verbraucherpreisindex,
-          Sonderauswertung Nahrungsmittel, yearly averages 2020–2024.
-          Euro prices are estimates derived from the index and a 2020 reference price.
-        </p>
-      </footer>
     </div>
   );
 }
