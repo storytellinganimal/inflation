@@ -357,7 +357,7 @@ export default function InflationApp() {
       <div className="page-frame">
 
         {/* Content zone: fills remaining height, content vertically centered */}
-        <div className="content-zone">
+        <div className={`content-zone${active ? " content-zone--product" : ""}`}>
           {active
             ? <ProductView key={activeId} product={active} yearIdx={yearIdx} />
             : <LandingView landingSlider={landingSlider} />

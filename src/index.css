@@ -46,8 +46,11 @@ body {
   align-items: center;
   justify-content: center;
   width: 100%;
-  /* larger top padding shifts centering point up, reducing gap to slider below */
   padding: clamp(40px, 14vh, 160px) 24px 0;
+}
+
+.content-zone--product {
+  align-items: flex-start;
 }
 
 /* ── BOTTOM ZONE — never moves ──────────────────────────── */
@@ -152,7 +155,7 @@ input[type="range"]::-moz-range-thumb {
 }
 
 .landing-description {
-  font-size: clamp(13px, 1.1vw, 16px);
+  font-size: clamp(15px, 1.5vw, 20px);
   font-weight: 400;
   line-height: 1.5;
   color: var(--ink);
@@ -343,7 +346,7 @@ input[type="range"]::-moz-range-thumb {
 .disclaimer {
   max-width: 480px;
   padding: 0 24px;
-  margin-top: 20px;
+  margin-top: 36px;
 }
 
 .disclaimer p {
@@ -358,7 +361,7 @@ input[type="range"]::-moz-range-thumb {
 /* ── FOOTER ─────────────────────────────────────────────── */
 
 .site-footer {
-  margin-top: 10px;
+  margin-top: 20px;
   padding: 0 24px;
 }
 
