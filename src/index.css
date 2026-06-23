@@ -405,7 +405,7 @@ input[type="range"]::-moz-range-thumb {
 .site-footer {
   width: 100%;
   max-width: 595px;
-  margin-top: 20px;
+  margin-top: 64px;
 }
 
 .site-footer p {
