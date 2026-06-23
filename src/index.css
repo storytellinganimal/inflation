@@ -166,7 +166,7 @@ input[type="range"]::-moz-range-thumb {
 .product-view {
   text-align: center;
   width: 100%;
-  max-width: 680px;
+  max-width: 595px;
 }
 
 .product-name {
@@ -264,7 +264,8 @@ input[type="range"]::-moz-range-thumb {
   text-transform: uppercase;
   color: var(--ink);
   text-align: center;
-  padding: 0 24px;
+  width: 100%;
+  max-width: 595px;
   margin-bottom: 16px;
   line-height: 1.5;
 }
@@ -274,7 +275,7 @@ input[type="range"]::-moz-range-thumb {
 .nav-outer {
   position: relative;
   width: 100%;
-  max-width: 680px;
+  max-width: 595px;
   overflow: hidden;
 }
 
@@ -344,8 +345,7 @@ input[type="range"]::-moz-range-thumb {
 /* ── DISCLAIMER ─────────────────────────────────────────── */
 
 .disclaimer {
-  max-width: 480px;
-  padding: 0 24px;
+  width: min(462px, 100%);
   margin-top: 36px;
 }
 
@@ -361,8 +361,9 @@ input[type="range"]::-moz-range-thumb {
 /* ── FOOTER ─────────────────────────────────────────────── */
 
 .site-footer {
+  width: 100%;
+  max-width: 595px;
   margin-top: 20px;
-  padding: 0 24px;
 }
 
 .site-footer p {
