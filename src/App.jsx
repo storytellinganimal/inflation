@@ -317,20 +317,14 @@ function ProductView({ product, yearIdx }) {
 
       <div className="wireframe-wrap">
         <div className="wireframe-stack">
-          {yearIdx > 0 && (
-            <div className="wireframe-layer">
-              <Wireframe
-                shape={product.shape}
-                scale={scaleFor(BASE_INDEX)}
-                ratio={1}
-                size={400}
-                strokeColor="rgba(255,255,255,0.5)"
-                fillColor="#FFF2BA"
-              />
-            </div>
-          )}
-          <div className="wireframe-layer">
-            <Wireframe shape={product.shape} scale={scale} ratio={BASE_INDEX / idx} size={400} />
+          {/* Ghost: always scale=1 so its useEffect never re-runs → rAF stays in sync */}
+          <div className="wireframe-layer wireframe-layer--ghost" style={{ opacity: yearIdx === 0 ? 0 : 1 }}>
+            <Wireframe shape={product.shape} scale={1} ratio={1} size={400}
+              strokeColor="#ffffff" fillColor="transparent" />
+          </div>
+          {/* Current: also scale=1, size difference handled by CSS transform */}
+          <div className="wireframe-layer" style={{ transform: `scale(${BASE_INDEX / idx})` }}>
+            <Wireframe shape={product.shape} scale={1} ratio={1} size={400} />
           </div>
         </div>
       </div>

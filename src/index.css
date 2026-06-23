@@ -207,6 +207,10 @@ input[type="range"]::-moz-range-thumb {
   align-items: center;
 }
 
+.wireframe-layer--ghost {
+  pointer-events: none;
+}
+
 /* Scale wireframe via CSS — no change to canvas rendering logic */
 .wireframe-wrap canvas {
   max-height: clamp(160px, 26vh, 260px);
