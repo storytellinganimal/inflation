@@ -397,7 +397,7 @@ export default function InflationApp() {
         </div>
 
         {/* Content zone: fills remaining height, content vertically centered */}
-        <div className={`content-zone${active ? " content-zone--product" : ""}`}>
+        <div className={`content-zone${active ? " content-zone--product" : " content-zone--landing"}`}>
           {active
             ? <ProductView key={activeId} product={active} yearIdx={yearIdx} />
             : <LandingView landingSlider={landingSlider} />
@@ -406,7 +406,7 @@ export default function InflationApp() {
 
         {/* Bottom zone: always fixed at same position — slider never moves */}
         <div className="bottom-zone">
-          <p className="cta-text">Select a product to see how much less your money buys today. Use the timeline to explore different years.</p>
+          {!active && <p className="cta-text">Select a product to see how much less your money buys today. Use the timeline to explore different years.</p>}
           {active
             ? <YearSlider value={yearIdx} step={1} onChange={setYearIdx} />
             : <YearSlider value={landingSlider} step={0.01} onChange={setLandingSlider} />

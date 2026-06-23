@@ -53,6 +53,10 @@ body {
   padding-top: clamp(28px, 7vh, 72px);
 }
 
+.content-zone--landing {
+  padding-bottom: clamp(40px, 7vh, 96px);
+}
+
 /* ── BOTTOM ZONE — never moves ──────────────────────────── */
 
 .bottom-zone {
@@ -113,7 +117,7 @@ input[type="range"]::-moz-range-thumb {
   display: flex;
   justify-content: space-between;
   font-family: 'DM Mono', monospace;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--ink);
 }
 
@@ -143,7 +147,7 @@ input[type="range"]::-moz-range-thumb {
 .landing-text {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 0px;
 }
 
 .landing-subtitle {
@@ -393,11 +397,11 @@ input[type="range"]::-moz-range-thumb {
 
 .disclaimer p {
   font-family: 'DM Sans', sans-serif;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 300;
   line-height: 1.5;
   color: var(--ink);
-  text-align: left;
+  text-align: center;
 }
 
 /* ── FOOTER ─────────────────────────────────────────────── */
