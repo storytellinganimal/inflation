@@ -71,7 +71,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-bottom: 60px;
+  margin-bottom: 36px;
 }
 
 input[type="range"] {
@@ -150,7 +150,7 @@ input[type="range"]::-moz-range-thumb {
   font-family: 'DM Sans', sans-serif;
   font-size: clamp(15px, 1.5vw, 20px);
   font-weight: 700;
-  line-height: 1.5;
+  line-height: 140%;
   color: var(--ink);
 }
 
@@ -302,8 +302,8 @@ input[type="range"]::-moz-range-thumb {
   color: var(--ink);
   text-align: center;
   width: 100%;
-  max-width: 595px;
-  margin-bottom: 16px;
+  width: min(462px, 100%);
+  margin-bottom: 52px;
   line-height: 1.5;
 }
 

@@ -406,11 +406,11 @@ export default function InflationApp() {
 
         {/* Bottom zone: always fixed at same position — slider never moves */}
         <div className="bottom-zone">
+          <p className="cta-text">Select a product to see how much less your money buys today. Use the timeline to explore different years.</p>
           {active
             ? <YearSlider value={yearIdx} step={1} onChange={setYearIdx} />
             : <YearSlider value={landingSlider} step={0.01} onChange={setLandingSlider} />
           }
-          <p className="cta-text">Select a product to see how much less your money now buys</p>
           <div className={`nav-outer${navFade.left ? " nav-outer--fade-left" : ""}${navFade.right ? " nav-outer--fade-right" : ""}`}>
             <nav className="product-nav" ref={navRef}>
               {PRODUCTS.map((p) => (
