@@ -320,7 +320,7 @@ function ProductView({ product, yearIdx }) {
           {/* Ghost: always scale=1 so its useEffect never re-runs → rAF stays in sync */}
           <div className="wireframe-layer wireframe-layer--ghost" style={{ opacity: yearIdx === 0 ? 0 : 1 }}>
             <Wireframe shape={product.shape} scale={1} ratio={1} size={400}
-              strokeColor="#ffffff" fillColor="transparent" />
+              strokeColor="#ffffff" fillColor="#ffffff" />
           </div>
           {/* Current: also scale=1, size difference handled by CSS transform */}
           <div className="wireframe-layer" style={{ transform: `scale(${BASE_INDEX / idx})` }}>
@@ -389,6 +389,12 @@ export default function InflationApp() {
   return (
     <div className="app">
       <div className="page-frame">
+
+        <div className="top-bar">
+          <button className="home-link" onClick={() => { setActiveId(null); setYearIdx(0); }}>
+            home
+          </button>
+        </div>
 
         {/* Content zone: fills remaining height, content vertically centered */}
         <div className={`content-zone${active ? " content-zone--product" : ""}`}>

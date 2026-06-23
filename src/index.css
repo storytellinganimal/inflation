@@ -270,6 +270,28 @@ input[type="range"]::-moz-range-thumb {
   margin: 0 auto;
 }
 
+/* ── TOP BAR ────────────────────────────────────────────── */
+
+.top-bar {
+  width: 100%;
+  padding: 20px 24px;
+  text-align: center;
+}
+
+.home-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 /* ── CTA TEXT ───────────────────────────────────────────── */
 
 .cta-text {
