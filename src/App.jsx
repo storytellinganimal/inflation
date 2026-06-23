@@ -287,10 +287,12 @@ function YearSlider({ yearIdx, onChange }) {
 }
 
 // ============ LANDING VIEW ============
-function LandingView() {
+function LandingView({ yearIdx }) {
+  // lightest weight at 2020, heaviest at 2024 — maps 0→200, 4→900
+  const weight = Math.round(200 + (yearIdx / (YEARS.length - 1)) * 700);
   return (
     <div className="landing-content">
-      <h1 className="site-title">inflation.</h1>
+      <h1 className="site-title" style={{ fontVariationSettings: `'wght' ${weight}` }}>inflation.</h1>
       <div className="landing-text">
         <p className="landing-subtitle">What did inflation do to your shopping basket?</p>
         <p className="landing-description">
@@ -357,7 +359,7 @@ export default function InflationApp() {
         <div className="content-zone">
           {active
             ? <ProductView key={activeId} product={active} yearIdx={yearIdx} />
-            : <LandingView />
+            : <LandingView yearIdx={yearIdx} />
           }
         </div>
 
