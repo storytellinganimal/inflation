@@ -266,20 +266,20 @@ function Wireframe({ shape, scale, ratio = 1, size = 400, strokeColor = "#1A1000
 }
 
 // ============ YEAR SLIDER ============
-function YearSlider({ yearIdx, onChange }) {
+function YearSlider({ value, step, onChange }) {
   return (
     <div className="slider-region">
       <input
         type="range"
         min={0}
         max={YEARS.length - 1}
-        step={1}
-        value={yearIdx}
+        step={step}
+        value={value}
         onChange={(e) => onChange(Number(e.target.value))}
       />
       <div className="year-ticks-row">
         {YEARS.map((y, i) => (
-          <span key={y} data-active={String(i === yearIdx)}>{y}</span>
+          <span key={y} data-active={String(step >= 1 && i === value)}>{y}</span>
         ))}
       </div>
     </div>
@@ -287,9 +287,9 @@ function YearSlider({ yearIdx, onChange }) {
 }
 
 // ============ LANDING VIEW ============
-function LandingView({ yearIdx }) {
-  // lightest weight at 2020, heaviest at 2024 — maps 0→200, 4→900
-  const weight = Math.round(200 + (yearIdx / (YEARS.length - 1)) * 700);
+function LandingView({ landingSlider }) {
+  // lightest weight at slider start, heaviest at end — fluid 200→900
+  const weight = Math.round(200 + (landingSlider / (YEARS.length - 1)) * 700);
   return (
     <div className="landing-content">
       <h1 className="site-title" style={{ fontVariationSettings: `'wght' ${weight}` }}>inflation.</h1>
@@ -343,6 +343,7 @@ function ProductView({ product, yearIdx }) {
 export default function InflationApp() {
   const [activeId, setActiveId] = useState(null);
   const [yearIdx, setYearIdx] = useState(0);
+  const [landingSlider, setLandingSlider] = useState(0);
 
   const active = PRODUCTS.find((p) => p.id === activeId);
 
@@ -359,13 +360,16 @@ export default function InflationApp() {
         <div className="content-zone">
           {active
             ? <ProductView key={activeId} product={active} yearIdx={yearIdx} />
-            : <LandingView yearIdx={yearIdx} />
+            : <LandingView landingSlider={landingSlider} />
           }
         </div>
 
         {/* Bottom zone: always fixed at same position — slider never moves */}
         <div className="bottom-zone">
-          <YearSlider yearIdx={yearIdx} onChange={setYearIdx} />
+          {active
+            ? <YearSlider value={yearIdx} step={1} onChange={setYearIdx} />
+            : <YearSlider value={landingSlider} step={0.01} onChange={setLandingSlider} />
+          }
           <p className="cta-text">Select a product to see how much less your money now buys</p>
           <div className="nav-outer">
             <nav className="product-nav">
