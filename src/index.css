@@ -114,7 +114,7 @@ input[type="range"]::-moz-range-thumb {
   justify-content: space-between;
   font-family: 'DM Mono', monospace;
   font-size: 12px;
-  color: var(--ink-mid);
+  color: var(--ink);
 }
 
 .year-ticks-row span[data-active="true"] {
@@ -186,7 +186,7 @@ input[type="range"]::-moz-range-thumb {
   font-size: 11px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--ink-mid);
+  color: var(--ink);
   margin-bottom: 8px;
 }
 
@@ -225,7 +225,7 @@ input[type="range"]::-moz-range-thumb {
   font-size: 16px;
   font-weight: 500;
   line-height: 1;
-  color: var(--ink-warm);
+  color: var(--ink);
 }
 
 .indicator-label {
@@ -288,6 +288,8 @@ input[type="range"]::-moz-range-thumb {
   width: 56px;
   z-index: 2;
   pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
 }
 
 .nav-outer::before {
@@ -300,10 +302,13 @@ input[type="range"]::-moz-range-thumb {
   background: linear-gradient(to left, #FFF2BA 25%, rgba(255, 242, 186, 0) 100%);
 }
 
+.nav-outer--fade-left::before { opacity: 1; }
+.nav-outer--fade-right::after { opacity: 1; }
+
 .product-nav {
   display: flex;
   flex-wrap: nowrap;
-  gap: 20px;
+  gap: 16px;
   overflow-x: auto;
   padding: 4px 16px;
   scrollbar-width: none;
@@ -323,7 +328,7 @@ input[type="range"]::-moz-range-thumb {
   font-family: 'DM Sans', sans-serif;
   font-size: 15px;
   font-weight: 500;
-  color: var(--ink-warm);
+  color: var(--ink);
   padding: 9px 16px;
   cursor: pointer;
   white-space: nowrap;

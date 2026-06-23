@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 
 const BASE_INDEX = 100;
 const YEARS = [2020, 2021, 2022, 2023, 2024];
@@ -344,6 +344,8 @@ export default function InflationApp() {
   const [activeId, setActiveId] = useState(null);
   const [yearIdx, setYearIdx] = useState(0);
   const [landingSlider, setLandingSlider] = useState(0);
+  const [navFade, setNavFade] = useState({ left: false, right: false });
+  const navRef = useRef(null);
 
   const active = PRODUCTS.find((p) => p.id === activeId);
 
@@ -351,6 +353,28 @@ export default function InflationApp() {
     if (id !== activeId) setYearIdx(0);
     setActiveId(id);
   };
+
+  const updateNavFade = useCallback(() => {
+    const el = navRef.current;
+    if (!el) return;
+    const { scrollLeft, scrollWidth, clientWidth } = el;
+    setNavFade({
+      left: scrollLeft > 1,
+      right: scrollLeft < scrollWidth - clientWidth - 1,
+    });
+  }, []);
+
+  useEffect(() => {
+    const el = navRef.current;
+    if (!el) return;
+    updateNavFade();
+    el.addEventListener("scroll", updateNavFade, { passive: true });
+    window.addEventListener("resize", updateNavFade);
+    return () => {
+      el.removeEventListener("scroll", updateNavFade);
+      window.removeEventListener("resize", updateNavFade);
+    };
+  }, [updateNavFade]);
 
   return (
     <div className="app">
@@ -371,8 +395,8 @@ export default function InflationApp() {
             : <YearSlider value={landingSlider} step={0.01} onChange={setLandingSlider} />
           }
           <p className="cta-text">Select a product to see how much less your money now buys</p>
-          <div className="nav-outer">
-            <nav className="product-nav">
+          <div className={`nav-outer${navFade.left ? " nav-outer--fade-left" : ""}${navFade.right ? " nav-outer--fade-right" : ""}`}>
+            <nav className="product-nav" ref={navRef}>
               {PRODUCTS.map((p) => (
                 <button
                   key={p.id}
