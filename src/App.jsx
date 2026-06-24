@@ -11,7 +11,7 @@ const PRODUCTS = [
   { id: "potato",   label: "Potatoes",   shape: "potatoes",   unit: "1 kg",  price2020: 1.00, index: [100, 100.2, 115,   131.3, 139.5] },
   { id: "sugar",    label: "Sugar",      shape: "box",      unit: "1 kg",  price2020: 0.75, index: [100, 104,   118.5, 180.6, 171.3] },
   { id: "oliveoil", label: "Olive oil",  shape: "cone",     unit: "1 l",   price2020: 5.00, index: [100, 101,   113.7, 145,   198.6] },
-  { id: "apples",   label: "Apples",     shape: "sphere",   unit: "1 kg",  price2020: 2.00, index: [100, 105,   105.5, 105.6, 112.6] },
+  { id: "apples",   label: "Apples",     shape: "apples",   unit: "1 kg",  price2020: 2.00, index: [100, 105,   105.5, 105.6, 112.6] },
 ];
 
 const scaleFor = (v) => BASE_INDEX / v;
@@ -261,6 +261,91 @@ function Wireframe({ shape, scale, ratio = 1, size = 400, strokeColor = "#1A1000
           });
           stroke(edges2, vt, sceneR);
         }
+      } else if (shape === "apple" || shape === "apples") {
+        const isSingle = shape === "apple";
+        const aSeg = isSingle ? 20 : 12, stSeg = isSingle ? 8 : 6;
+        // Profile [radius, y]: bottom (y>0) → shoulder → dimple rim (y<0)
+        // positive y = screen-bottom in this projection
+        const prof = [
+          [0.04,  1.03],
+          [0.54,  0.84],
+          [0.84,  0.58],
+          [1.02,  0.28],
+          [1.08,  0.00],
+          [1.04, -0.26],
+          [0.90, -0.50],
+          [0.72, -0.68],
+          [0.52, -0.80],
+          [0.34, -0.87],
+          [0.20, -0.90],  // shoulder / dimple rim
+          [0.10, -0.86],  // dimple wall entrance
+          [0.04, -0.76],  // deep in dimple
+        ];
+        const dY = -0.60;  // dimple pole — lower than shoulder, gives concave depression
+        const av = [], ae = [];
+        const aBP = av.length; av.push([0, 1.06, 0]);  // bottom pole
+        const aRS = prof.map(([r, y]) => {
+          const rs = av.length;
+          for (let s = 0; s < aSeg; s++) {
+            const t = (s / aSeg) * Math.PI * 2;
+            av.push([Math.cos(t) * r, y, Math.sin(t) * r]);
+          }
+          return rs;
+        });
+        const aDP = av.length; av.push([0, dY, 0]);  // dimple pole
+        // Stem: 5 rings curving upward and slightly to one side
+        const stPts = [[0, dY, 0.07], [0.04, dY-0.20, 0.065], [0.10, dY-0.38, 0.056], [0.18, dY-0.52, 0.048], [0.26, dY-0.62, 0.038]];
+        const aStR = stPts.map(([sx, sy, sr]) => {
+          const rs = av.length;
+          for (let s = 0; s < stSeg; s++) {
+            const t = (s / stSeg) * Math.PI * 2;
+            av.push([sx + Math.cos(t) * sr, sy, Math.sin(t) * sr]);
+          }
+          return rs;
+        });
+        for (let s = 0; s < aSeg; s++) ae.push([aBP, aRS[0] + s]);  // bottom fan
+        for (let ri = 0; ri < prof.length; ri++) {
+          for (let s = 0; s < aSeg; s++) {
+            ae.push([aRS[ri] + s, aRS[ri] + (s + 1) % aSeg]);
+            if (ri < prof.length - 1) ae.push([aRS[ri] + s, aRS[ri + 1] + s]);
+          }
+        }
+        for (let s = 0; s < aSeg; s++) ae.push([aRS[prof.length - 1] + s, aDP]);  // top fan
+        for (let s = 0; s < stSeg; s++) ae.push([aDP, aStR[0] + s]);  // dimple → stem
+        for (let i = 0; i < aStR.length; i++) {
+          for (let s = 0; s < stSeg; s++) {
+            ae.push([aStR[i] + s, aStR[i] + (s + 1) % stSeg]);
+            if (i < aStR.length - 1) ae.push([aStR[i] + s, aStR[i + 1] + s]);
+          }
+        }
+        if (isSingle) {
+          stroke(ae, av);
+        } else {
+          const TOTAL = 10;
+          const show = Math.max(0, Math.min(TOTAL, Math.round(TOTAL * ratio)));
+          const scR = baseR * 0.88;
+          const inst = [
+            [-1.20, -0.10, -0.18,  0.30, 0.26],
+            [ 0.06, -0.04,  0.12, -0.80, 0.28],
+            [ 1.18,  0.10, -0.14,  1.20, 0.25],
+            [-0.65,  0.32,  0.44,  2.10, 0.26],
+            [ 0.58,  0.22,  0.40, -1.50, 0.27],
+            [-1.08,  0.16,  0.30,  0.72, 0.24],
+            [ 0.30, -0.18, -0.36, -2.00, 0.26],
+            [ 0.92, -0.06,  0.26,  1.82, 0.25],
+            [-0.32,  0.26, -0.28, -0.28, 0.27],
+            [ 1.06,  0.18,  0.50,  2.52, 0.25],
+          ];
+          for (let i = 0; i < show; i++) {
+            const [ox, oy, oz, rot, sc] = inst[i];
+            const cr = Math.cos(rot), sr = Math.sin(rot);
+            const vt = av.map(([x, y, z]) => {
+              const rx = x * cr - z * sr, rz = x * sr + z * cr;
+              return [rx * sc + ox, y * sc + oy, rz * sc + oz];
+            });
+            stroke(ae, vt, scR);
+          }
+        }
       } else if (shape === "eggbox") {
         const R = fixedR;
         const COLS = 5, ROWS = 2, TOTAL = COLS * ROWS;
@@ -429,7 +514,7 @@ function ProductView({ product, yearIdx }) {
             <Wireframe shape={product.shape} scale={1} ratio={1} size={400}
               strokeColor="#ffffff" fillColor="#ffffff" />
           </div>
-          {(product.shape === "eggbox" || product.shape === "potatoes")
+          {(product.shape === "eggbox" || product.shape === "potatoes" || product.shape === "apples")
             ? <div className="wireframe-layer">
                 <Wireframe shape={product.shape} scale={1} ratio={BASE_INDEX / idx} size={400} />
               </div>
