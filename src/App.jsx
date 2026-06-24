@@ -8,7 +8,7 @@ const PRODUCTS = [
   { id: "milk",     label: "Whole milk", shape: "cylinder", unit: "1 l",   price2020: 0.70, index: [100, 104,   124.8, 136.3, 130.7] },
   { id: "eggs",     label: "Eggs",       shape: "eggbox",   unit: "10",    price2020: 1.50, index: [100, 107.2, 128,   136.4, 138.5] },
   { id: "bread",    label: "Rye bread",  shape: "box",      unit: "500 g", price2020: 2.00, index: [100, 103.3, 116.7, 132.1, 133.9] },
-  { id: "potato",   label: "Potatoes",   shape: "potato",   unit: "1 kg",  price2020: 1.00, index: [100, 100.2, 115,   131.3, 139.5] },
+  { id: "potato",   label: "Potatoes",   shape: "potatoes",   unit: "1 kg",  price2020: 1.00, index: [100, 100.2, 115,   131.3, 139.5] },
   { id: "sugar",    label: "Sugar",      shape: "box",      unit: "1 kg",  price2020: 0.75, index: [100, 104,   118.5, 180.6, 171.3] },
   { id: "oliveoil", label: "Olive oil",  shape: "cone",     unit: "1 l",   price2020: 5.00, index: [100, 101,   113.7, 145,   198.6] },
   { id: "apples",   label: "Apples",     shape: "sphere",   unit: "1 kg",  price2020: 2.00, index: [100, 105,   105.5, 105.6, 112.6] },
@@ -202,6 +202,65 @@ function Wireframe({ shape, scale, ratio = 1, size = 400, strokeColor = "#1A1000
           }
         }
         stroke(e, v);
+      } else if (shape === "potatoes") {
+        const TOTAL = 10;
+        const show = Math.max(0, Math.min(TOTAL, Math.round(TOTAL * ratio)));
+        // Shared vertex generator (same formula as "potato")
+        const bump2 = (phi, theta, p0, t0, amp, sp, st) => {
+          const dp = phi - p0, dt = Math.atan2(Math.sin(theta - t0), Math.cos(theta - t0));
+          return amp * Math.exp(-(dp * dp * sp + dt * dt * st));
+        };
+        const potatoRad = (phi, theta) => {
+          const base = 0.97 - 0.25 * Math.pow(Math.abs(phi / (Math.PI / 2)), 2.0);
+          const asym = 0.045 * Math.cos(theta + 0.4) * Math.sin(phi * 0.9);
+          return base + asym
+            + bump2(phi, theta,  0.18, 0.9, 0.13, 3.5, 2.2)
+            + bump2(phi, theta, -0.28, 2.7, 0.11, 3.0, 2.0)
+            + bump2(phi, theta,  0.38, 4.4, 0.10, 3.2, 2.4)
+            + bump2(phi, theta, -0.08, 5.6, 0.12, 3.8, 2.1)
+            + bump2(phi, theta,  0.52, 1.9, 0.08, 4.0, 2.8);
+        };
+        const rings2 = 6, segs2 = 10;
+        const baseV = [];
+        for (let r = 0; r <= rings2; r++) {
+          const phi = (r / rings2) * Math.PI - Math.PI / 2;
+          for (let s2 = 0; s2 < segs2; s2++) {
+            const theta = (s2 / segs2) * Math.PI * 2;
+            const Rv = potatoRad(phi, theta);
+            baseV.push([Math.cos(phi) * Math.cos(theta) * Rv * 1.44, Math.sin(phi) * Rv * 0.90, Math.cos(phi) * Math.sin(theta) * Rv * 0.86]);
+          }
+        }
+        const edges2 = [];
+        for (let r = 0; r <= rings2; r++) {
+          for (let s2 = 0; s2 < segs2; s2++) {
+            const cur = r * segs2 + s2, nxt = r * segs2 + ((s2 + 1) % segs2);
+            edges2.push([cur, nxt]);
+            if (r < rings2) edges2.push([cur, cur + segs2]);
+          }
+        }
+        // [ox, oy, oz, yRotation, scale] — spread to fill canvas, each potato legible
+        const inst = [
+          [-1.22, -0.10, -0.20,  0.30, 0.26],
+          [ 0.08, -0.05,  0.14, -0.82, 0.28],
+          [ 1.20,  0.12, -0.16,  1.20, 0.25],
+          [-0.68,  0.35,  0.46,  2.10, 0.26],
+          [ 0.60,  0.25,  0.42, -1.50, 0.27],
+          [-1.10,  0.18,  0.32,  0.72, 0.24],
+          [ 0.32, -0.20, -0.38, -2.00, 0.26],
+          [ 0.95, -0.08,  0.28,  1.82, 0.25],
+          [-0.35,  0.28, -0.30, -0.28, 0.27],
+          [ 1.08,  0.20,  0.52,  2.52, 0.25],
+        ];
+        const sceneR = baseR * 0.88;
+        for (let i = 0; i < show; i++) {
+          const [ox, oy, oz, rot, sc] = inst[i];
+          const cr = Math.cos(rot), sr = Math.sin(rot);
+          const vt = baseV.map(([x, y, z]) => {
+            const rx = x * cr - z * sr, rz = x * sr + z * cr;
+            return [rx * sc + ox, y * sc + oy, rz * sc + oz];
+          });
+          stroke(edges2, vt, sceneR);
+        }
       } else if (shape === "eggbox") {
         const R = fixedR;
         const COLS = 5, ROWS = 2, TOTAL = COLS * ROWS;
@@ -370,9 +429,9 @@ function ProductView({ product, yearIdx }) {
             <Wireframe shape={product.shape} scale={1} ratio={1} size={400}
               strokeColor="#ffffff" fillColor="#ffffff" />
           </div>
-          {product.shape === "eggbox"
+          {(product.shape === "eggbox" || product.shape === "potatoes")
             ? <div className="wireframe-layer">
-                <Wireframe shape="eggbox" scale={1} ratio={BASE_INDEX / idx} size={400} />
+                <Wireframe shape={product.shape} scale={1} ratio={BASE_INDEX / idx} size={400} />
               </div>
             : <div className="wireframe-layer" style={{ transform: `scale(${BASE_INDEX / idx})` }}>
                 <Wireframe shape={product.shape} scale={1} ratio={1} size={400} />
