@@ -8,7 +8,7 @@ const PRODUCTS = [
   { id: "milk",     label: "Whole milk", shape: "cylinder", unit: "1 l",   price2020: 0.70, index: [100, 104,   124.8, 136.3, 130.7] },
   { id: "eggs",     label: "Eggs",       shape: "eggbox",   unit: "10",    price2020: 1.50, index: [100, 107.2, 128,   136.4, 138.5] },
   { id: "bread",    label: "Rye bread",  shape: "box",      unit: "500 g", price2020: 2.00, index: [100, 103.3, 116.7, 132.1, 133.9] },
-  { id: "potato",   label: "Potatoes",   shape: "sphere",   unit: "1 kg",  price2020: 1.00, index: [100, 100.2, 115,   131.3, 139.5] },
+  { id: "potato",   label: "Potatoes",   shape: "potato",   unit: "1 kg",  price2020: 1.00, index: [100, 100.2, 115,   131.3, 139.5] },
   { id: "sugar",    label: "Sugar",      shape: "box",      unit: "1 kg",  price2020: 0.75, index: [100, 104,   118.5, 180.6, 171.3] },
   { id: "oliveoil", label: "Olive oil",  shape: "cone",     unit: "1 l",   price2020: 5.00, index: [100, 101,   113.7, 145,   198.6] },
   { id: "apples",   label: "Apples",     shape: "sphere",   unit: "1 kg",  price2020: 2.00, index: [100, 105,   105.5, 105.6, 112.6] },
@@ -159,6 +159,46 @@ function Wireframe({ shape, scale, ratio = 1, size = 400, strokeColor = "#1A1000
           for (let s = 0; s < segs; s++) {
             const cur = r*segs+s, nxt = r*segs+((s+1)%segs);
             e.push([cur, nxt]); if (r < rings) e.push([cur, cur+segs]);
+          }
+        }
+        stroke(e, v);
+      } else if (shape === "potato") {
+        const rings = 10, segs = 14, v = [], e = [];
+        // Gaussian bump: phi center, theta center, amplitude, phi spread, theta spread
+        const bump = (phi, theta, p0, t0, amp, sp, st) => {
+          const dp = phi - p0;
+          const dt = Math.atan2(Math.sin(theta - t0), Math.cos(theta - t0));
+          return amp * Math.exp(-(dp * dp * sp + dt * dt * st));
+        };
+        const potatoR = (phi, theta) => {
+          // Elongated base, tapers more at poles
+          const base = 0.97 - 0.25 * Math.pow(Math.abs(phi / (Math.PI / 2)), 2.0);
+          // Slight end asymmetry
+          const asym = 0.045 * Math.cos(theta + 0.4) * Math.sin(phi * 0.9);
+          return base + asym
+            + bump(phi, theta,  0.18,  0.9, 0.13, 3.5, 2.2)
+            + bump(phi, theta, -0.28,  2.7, 0.11, 3.0, 2.0)
+            + bump(phi, theta,  0.38,  4.4, 0.10, 3.2, 2.4)
+            + bump(phi, theta, -0.08,  5.6, 0.12, 3.8, 2.1)
+            + bump(phi, theta,  0.52,  1.9, 0.08, 4.0, 2.8);
+        };
+        for (let r = 0; r <= rings; r++) {
+          const phi = (r / rings) * Math.PI - Math.PI / 2;
+          for (let s = 0; s < segs; s++) {
+            const theta = (s / segs) * Math.PI * 2;
+            const R = potatoR(phi, theta);
+            v.push([
+              Math.cos(phi) * Math.cos(theta) * R * 1.44,
+              Math.sin(phi) * R * 0.90,
+              Math.cos(phi) * Math.sin(theta) * R * 0.86,
+            ]);
+          }
+        }
+        for (let r = 0; r <= rings; r++) {
+          for (let s = 0; s < segs; s++) {
+            const cur = r * segs + s, nxt = r * segs + ((s + 1) % segs);
+            e.push([cur, nxt]);
+            if (r < rings) e.push([cur, cur + segs]);
           }
         }
         stroke(e, v);
