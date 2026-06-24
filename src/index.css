@@ -215,6 +215,13 @@ input[type="range"]::-moz-range-thumb {
   pointer-events: none;
 }
 
+.wireframe-overlay {
+  grid-area: 1 / 1;
+  z-index: 10;
+  cursor: grab;
+}
+.wireframe-overlay:active { cursor: grabbing; }
+
 /* Scale wireframe via CSS — no change to canvas rendering logic */
 .wireframe-wrap canvas {
   max-height: clamp(160px, 26vh, 260px);

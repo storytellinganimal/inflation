@@ -309,6 +309,15 @@ function ProductView({ product, yearIdx }) {
   const scale = scaleFor(idx);
   const pNow = priceFor(product, yearIdx);
   const pct = Math.round((idx - BASE_INDEX) * 10) / 10;
+  const stackRef = useRef(null);
+
+  const handleOverlayPointerDown = useCallback((e) => {
+    stackRef.current?.querySelectorAll('canvas').forEach(cv => {
+      cv.dispatchEvent(new MouseEvent('mousedown', {
+        bubbles: false, cancelable: true, clientX: e.clientX, clientY: e.clientY,
+      }));
+    });
+  }, []);
 
   return (
     <div className="product-view">
@@ -316,7 +325,7 @@ function ProductView({ product, yearIdx }) {
       <span className="product-unit">{product.unit}</span>
 
       <div className="wireframe-wrap">
-        <div className="wireframe-stack">
+        <div className="wireframe-stack" ref={stackRef}>
           <div className="wireframe-layer wireframe-layer--ghost" style={{ opacity: yearIdx === 0 ? 0 : 1 }}>
             <Wireframe shape={product.shape} scale={1} ratio={1} size={400}
               strokeColor="#ffffff" fillColor="#ffffff" />
@@ -329,6 +338,7 @@ function ProductView({ product, yearIdx }) {
                 <Wireframe shape={product.shape} scale={1} ratio={1} size={400} />
               </div>
           }
+          <div className="wireframe-overlay" onMouseDown={handleOverlayPointerDown} />
         </div>
       </div>
 
