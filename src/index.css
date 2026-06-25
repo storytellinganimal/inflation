@@ -1,13 +1,446 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
+
+:root {
+  --butter: #FFF2BA;
+  --ink:    #000000;
+  --ink-mid:  rgba(0, 0, 0, 0.45);
+  --ink-soft: rgba(0, 0, 0, 0.22);
+  --ink-warm: #1a1000;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  background: var(--butter);
+  color: var(--ink);
+  font-family: 'DM Sans', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+/* ── APP + PAGE FRAME ───────────────────────────────────── */
+
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--butter);
+}
+
+.page-frame {
+  width: 100%;
+  max-width: 1440px;
+  flex: 1;                   /* fills viewport height */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ── CONTENT ZONE — fills remaining height, content centered ── */
+
+.content-zone {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: clamp(40px, 14vh, 160px) 24px 0;
+}
+
+.content-zone--product {
+  align-items: flex-start;
+  padding-top: clamp(28px, 7vh, 72px);
+}
+
+.content-zone--landing {
+  padding-bottom: clamp(40px, 7vh, 96px);
+}
+
+/* ── BOTTOM ZONE — never moves ──────────────────────────── */
+
+.bottom-zone {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 0 24px 32px;
+}
+
+/* ── YEAR SLIDER ────────────────────────────────────────── */
+
+.slider-region {
+  width: min(462px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 36px;
+}
+
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 1px;
+  background: var(--ink-warm);
+  outline: none;
+  cursor: pointer;
+  display: block;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--butter);
+  border: 1.5px solid var(--ink-warm);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  background: var(--ink-warm);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--butter);
+  border: 1.5px solid var(--ink-warm);
+  cursor: pointer;
+}
+
+.year-ticks-row {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'DM Mono', monospace;
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.year-ticks-row span[data-active="true"] {
+  color: var(--ink);
+}
+
+/* ── LANDING CONTENT ────────────────────────────────────── */
+
+.landing-content {
+  text-align: center;
+  width: 100%;
+  max-width: 595px;
+}
+
+.site-title {
+  font-family: "late-serif-variable", Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: clamp(72px, 8.5vw, 120px);
+  letter-spacing: -0.045em;
+  line-height: 1;
+  color: var(--ink);
+  margin-bottom: 20px;
+}
+
+.landing-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0px;
+}
+
+.landing-subtitle {
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(15px, 1.5vw, 20px);
+  font-weight: 700;
+  line-height: 140%;
+  color: var(--ink);
+}
+
+.landing-description {
+  font-size: clamp(15px, 1.5vw, 20px);
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+/* ── PRODUCT VIEW ───────────────────────────────────────── */
+
+.product-view {
+  text-align: center;
+  width: 100%;
+  max-width: 595px;
+}
+
+.product-name {
+  font-family: "late-serif-variable", Georgia, serif;
+  font-style: normal;
+  font-weight: 400;
+  font-size: clamp(30px, 3.5vw, 48px);
+  letter-spacing: -0.045em;
+  line-height: 1;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.product-unit {
+  display: block;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+.wireframe-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.wireframe-stack {
+  display: grid;
+}
+
+.wireframe-layer {
+  grid-area: 1 / 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.wireframe-layer--ghost {
+  pointer-events: none;
+}
+
+.wireframe-overlay {
+  grid-area: 1 / 1;
+  z-index: 10;
+  cursor: grab;
+}
+.wireframe-overlay:active { cursor: grabbing; }
+
+/* Scale wireframe via CSS — no change to canvas rendering logic */
+.wireframe-wrap canvas {
+  max-height: clamp(160px, 26vh, 260px);
+  aspect-ratio: 1 / 1;
+}
+
+/* ── INDICATORS ─────────────────────────────────────────── */
+
+.indicators-row {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  min-width: 66px;
+}
+
+.indicator-value {
+  font-family: 'DM Mono', monospace;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.indicator-label {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  line-height: normal;
+  text-align: center;
+  width: 66px;
+}
+
+.indicator--high .indicator-value {
+  color: var(--ink);
+}
+
+/* ── NARRATIVE ──────────────────────────────────────────── */
+
+.narrative {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink);
+  text-align: center;
+  max-width: 475px;
+  margin: 0 auto;
+}
+
+/* ── TOP BAR ────────────────────────────────────────────── */
+
+.top-bar {
+  width: 100%;
+  padding: 20px 24px;
+  text-align: center;
+}
+
+.home-link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ── CTA TEXT ───────────────────────────────────────────── */
+
+.cta-text {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-align: center;
+  width: 100%;
+  width: min(462px, 100%);
+  margin-bottom: 52px;
+  line-height: 1.5;
+}
+
+/* ── NAV PILLS — horizontal scroll + gradient fade ──────── */
+
+.nav-outer {
+  position: relative;
+  width: 100%;
+  max-width: 595px;
+  overflow: hidden;
+}
+
+.nav-outer::before,
+.nav-outer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 56px;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.nav-outer::before {
+  left: 0;
+  background: linear-gradient(to right, #FFF2BA 25%, rgba(255, 242, 186, 0) 100%);
+}
+
+.nav-outer::after {
+  right: 0;
+  background: linear-gradient(to left, #FFF2BA 25%, rgba(255, 242, 186, 0) 100%);
+}
+
+.nav-outer--fade-left::before { opacity: 1; }
+.nav-outer--fade-right::after { opacity: 1; }
+
+.product-nav {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 16px;
+  overflow-x: auto;
+  padding: 4px 16px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.product-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.product-btn {
+  flex-shrink: 0;
+  background: white;
+  border: 1px solid var(--ink);
+  border-radius: 32px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+  padding: 9px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.12s, color 0.12s;
+  letter-spacing: -0.01em;
+  line-height: normal;
+}
+
+.product-btn:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.product-btn--active {
+  background: var(--ink);
+  color: var(--butter);
+  border-color: var(--ink);
+}
+
+/* ── DISCLAIMER ─────────────────────────────────────────── */
+
+.disclaimer {
+  width: min(462px, 100%);
+  margin-top: 36px;
+}
+
+.disclaimer p {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.5;
+  color: var(--ink);
+  text-align: center;
+}
+
+/* ── FOOTER ─────────────────────────────────────────────── */
+
+.site-footer {
+  width: 100%;
+  max-width: 595px;
+  margin-top: 64px;
+}
+
+.site-footer p {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-align: center;
+}
+
+/* ── RESPONSIVE ─────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+  .site-title { font-size: clamp(60px, 18vw, 90px); }
+  .indicators-row { gap: 20px; }
+  .wireframe-wrap canvas { max-height: clamp(140px, 40vw, 220px); }
+  .product-nav { gap: 12px; }
+}
+
+@media (max-height: 700px) {
+  .content-zone { padding: 24px 24px 0; }
+  .wireframe-wrap canvas { max-height: clamp(120px, 22vh, 180px); }
+  .indicators-row { margin-bottom: 10px; }
+  .slider-region { margin-bottom: 24px; }
 }

@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import "./App.css";
 
 const BASE_INDEX = 100;
 const YEARS = [2020, 2021, 2022, 2023, 2024];
